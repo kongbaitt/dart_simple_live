@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "tv_*"
+  workflow_dispatch:  # ✅ 允许手动触发
 jobs:
   build-tv:
     runs-on: macos-latest

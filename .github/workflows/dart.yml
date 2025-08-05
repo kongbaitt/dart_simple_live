@@ -1,0 +1,48 @@
+name: Flutter Build APK
+
+on:
+  push:
+    branches: [ main ]  # 或者你用的是 master
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: simple_live_tv_app
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
+      - name: Cache Flutter SDK
+        uses: actions/cache@v3
+        with:
+          path: ~/.flutter
+          key: flutter-${{ runner.os }}-3.22.0
+
+      - name: Cache pub packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache
+          key: pub-${{ runner.os }}-3.22.0-${{ hashFiles('**/pubspec.yaml') }}
+          
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apk
+          path: simple_live_tv_app/build/app/outputs/flutter-apk/app-release.apk

@@ -78,6 +78,8 @@ jobs:
       - name: Upload Release
         uses: softprops/action-gh-release@v1
         with:
+          # workflow_dispatch 不是 tag 触发；用运行编号生成唯一 tag，避免重复打包 1.5.0 时冲突。
+          tag_name: "tv-v${{ fromJson(steps.version.outputs.content).version }}-${{ github.run_number }}-${{ github.run_attempt }}"
           name: "${{ fromJson(steps.version.outputs.content).version }}"
           body: "# Android TV \n${{ fromJson(steps.version.outputs.content).version_desc }}"
           prerelease: ${{ fromJson(steps.version.outputs.content).prerelease }}
